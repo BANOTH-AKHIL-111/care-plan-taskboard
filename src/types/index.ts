@@ -18,3 +18,4 @@ export interface Task {
   dueDate: string;
   createdAt: string;
 }
+export type TimeFilter = "overdue" | "today" | "upcoming";
