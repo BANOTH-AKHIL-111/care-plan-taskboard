@@ -8,3 +8,6 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 )
+import { worker } from "./mocks/browser";
+
+worker.start();
