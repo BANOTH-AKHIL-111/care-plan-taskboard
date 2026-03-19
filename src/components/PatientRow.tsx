@@ -10,20 +10,30 @@ type Props = {
 };
 
 export const PatientRow = ({ patient, roleFilter, timeFilter }: Props) => {
-  const { data: tasks = [], isLoading } = useTasks(patient.id);
+  const { data: tasks = [], isLoading, isError, refetch } = useTasks(patient.id);
   const { mutate } = useUpdateTask();
 
-  if (isLoading) return <p>Loading tasks...</p>;
+  // ✅ loading
+  if (isLoading) return <p>Loading tasks for {patient.name}...</p>;
+
+  // ✅ error (INSIDE component)
+  if (isError) {
+    return (
+      <div>
+        <h2>{patient.name}</h2>
+        <p style={{ color: "red" }}>Failed to load tasks</p>
+        <button onClick={() => refetch()}>Retry</button>
+      </div>
+    );
+  }
 
   const today = new Date();
 
   const filteredTasks = tasks.filter((t) => {
-    // Role filter
     if (roleFilter !== "all" && t.role !== roleFilter) return false;
 
     const due = new Date(t.dueDate);
 
-    // Time filter
     if (timeFilter === "overdue" && due >= today) return false;
 
     if (
@@ -36,6 +46,16 @@ export const PatientRow = ({ patient, roleFilter, timeFilter }: Props) => {
 
     return true;
   });
+
+  // ✅ empty state (nice improvement)
+  if (filteredTasks.length === 0) {
+    return (
+      <div>
+        <h2>{patient.name}</h2>
+        <p>No tasks available for selected filters</p>
+      </div>
+    );
+  }
 
   const todo = filteredTasks.filter((t) => t.status === "todo");
   const inProgress = filteredTasks.filter(
