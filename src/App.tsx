@@ -1,5 +1,7 @@
+import { TaskBoard } from "./components/TaskBoard";
+
 function App() {
-  return <h1>Care Plan Taskboard</h1>;
+  return <TaskBoard />;
 }
 
 export default App;
